@@ -4,14 +4,14 @@
 """
 
 
-# def new_sorted_list(lst: list) -> list:
-#     tmp_list = list(set(lst))
-#     for x in tmp_list:
-#         lst.remove(x)
-#     return list(set(lst))
-#
-# lst = [1,1,1,2,3,3,4,5,6,7,7]
-# print(new_sorted_list(lst))
+def new_sorted_list(lst: list) -> list:
+    tmp_list = list(set(lst))
+    for x in tmp_list:
+        lst.remove(x)
+    return list(set(lst))
+
+lst = [1,1,1,2,3,3,4,5,6,7,7]
+print(new_sorted_list(lst))
 
 """
 3. В большой текстовой строке подсчитать количество встречаемых слов и вернуть 10 самых частых. 
@@ -34,14 +34,14 @@ txt = """
 Коренными жителями Атлантики являются африканский ламантин и самое крупное млекопитающее планеты — синий кит.
 """
 import re
-# def count_words(txt: str):
-#     words_counter = {}
-#     words_lst = re.findall("[А-яа-я]+", txt)
-#     for word in words_lst:
-#         words_counter[word] = words_lst.count(word)
-#     return sorted(words_counter.items(), key=lambda x: x[1], reverse= True)
-#
-# print(count_words(txt))
+def count_words(txt: str):
+    words_counter = {}
+    words_lst = re.findall("[А-яа-я]+", txt)
+    for word in words_lst:
+        words_counter[word] = words_lst.count(word)
+    return sorted(words_counter.items(), key=lambda x: x[1], reverse= True)
+
+print(count_words(txt))
 
 
 """
