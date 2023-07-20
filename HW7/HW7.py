@@ -15,12 +15,13 @@ import random
 from os import listdir, rename
 from os.path import isfile, join
 
-def group_rename(new_name:str, final_extension:str, extension_of_files:str,miin =0, maax =0,needed_files_qty = 10):
+def group_rename(new_name:str, final_extension:str, extension_of_files:str,miin =0, maax =0,needed_files_qty = 10,
+                 digit_number=0):
 
     path = 'D:\GeekBrains\Python_SPECIFICATION\HW7\Folder_to_test'
     count = 0
     file_count = 0
-    digit_in_name = 2
+
 
 
 
@@ -34,8 +35,10 @@ def group_rename(new_name:str, final_extension:str, extension_of_files:str,miin 
                 name1 = file[:file.rfind('.')][miin:maax]
             else:
                 name1 = ''
-            final_new_name = name1 + new_name + str(count)
 
+            digit_in_name = (len(str(digit_number)) - len(str(count)) if len(str(digit_number)) > len(str(count)) else 0)
+            final_new_name = name1 + new_name + (digit_in_name * '0')+str(count)
             rename(f'{path}\{file}', f'{path}\{final_new_name}.{final_extension}')
             if file_count == needed_files_qty:
                 break
+
