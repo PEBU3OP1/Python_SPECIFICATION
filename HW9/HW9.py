@@ -69,4 +69,5 @@ def quadratic_equation(a: complex, b: complex, c: complex):
         return d, x1, x2
     return
 
-quadratic_equation()
+if __name__ == '__main__':
+    quadratic_equation()
