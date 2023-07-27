@@ -1,67 +1,72 @@
 """
-                                                    Cеминар
-Задание №1
-Создайте функцию-замыкание, которая запрашивает два целых
-числа:
- - от 1 до 100 для загадывания,
- - от 1 до 10 для количества попыток
-Функция возвращает функцию, которая через консоль просит
-угадать загаданное число за указанное число попыток.
+Напишите следующие функции:
+○ Нахождение корней квадратного уравнения
+○ Генерация csv файла с тремя случайными числами в каждой строке.
+100-1000 строк.
+○ Декоратор, запускающий функцию нахождения корней квадратного
+уравнения с каждой тройкой чисел из csv файла.
+○ Декоратор, сохраняющий переданные параметры и результаты работы
+функции в json файл.
+Соберите пакет с играми из тех файлов, что уже были созданы в рамках курса
 
 """
-
-def create_guess_game(answer:int):
-    def guess_game (attemts:int):
-        for _ in range(attemts):
-            guess = int(input('Отгадайте число: '))
-            if guess == answer:
-                print('Bingo!')
-                return
-            elif guess < answer:
-                print('Number is more')
-            else:
-                print('Number is less')
-        print('Looser!')
-    return guess_game
-
-num = create_guess_game(5)
-num(3)
-
-"""
-Задание №2
-Дорабатываем задачу 1.
-Превратите внешнюю функцию в декоратор.
-Он должен проверять входят ли переданные в функциюугадайку числа в диапазоны [1, 100] и [1, 10].
-Если не входят, вызывать функцию со случайными числами
-из диапазонов.
-"""
-
+import csv
+import json
 import random
-def check_data(func):
-    def wrapper(answer:int, attempts:int):
-        if not answer :
-            print('New answer')
-            answer = random.randint(1,100)
-        if not attempts:
-            print('New attemts')
-            attempts = random.randint(1,10)
-        return func(answer,attempts)
+from functools import wraps
+from os.path import isfile
+
+
+def read_csv(name:str = 'default.csv'):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            with open(name, mode='r', encoding='utf-8') as file:
+                reader = csv.reader(file)
+                for i, row in enumerate(reader):
+                    if i > 0:
+                        args = (complex(j) for j in row)
+                        res = func(*args, **kwargs)
+                        yield res
+
+        return wrapper
+    return decorator
+
+def save_to_json(func):
+
+    def wrapper(*args, **kwargs):
+        if isfile(f'{func.__name__}.json'):
+            with open(f'{func.__name__}.json', encoding='utf-8') as f:
+                data = json.load(f)
+        else:
+            data = []
+        for result in func(*args, **kwargs):
+            if result:
+                data.append({'args': args, 'kwargs': kwargs, 'result': str(result)})
+        with open(f'{func.__name__}.json','w', encoding='utf-8') as f:
+            json.dump(data, f)
     return wrapper
 
 
-@check_data
-def create_guess_game(answer:int, attemts:int):
-    def guess_game ():
-        for _ in range(attemts):
-            guess = int(input('Отгадайте число: '))
-            if guess == answer:
-                print('Bingo!')
-                return
-            elif guess < answer:
-                print('Number is more')
-            else:
-                print('Number is less')
-        print('Looser!')
-    return guess_game()
 
-create_guess_game(0,10)
+def csv_file_generation(name: str = 'default', rows_qty: int = random.randint(100, 1000)):
+    list_of_rows = []
+    for _ in range(rows_qty):
+        a, b, c = random.sample(range(-100, 100), 3)
+        list_of_rows.append({'a': a, 'b': b, 'c': c})
+
+    with open(f'{name}.csv', mode='w', encoding='utf-8', newline='')as f:
+        writer = csv.DictWriter(f, fieldnames=['a', 'b', 'c'])
+        writer.writeheader()
+        writer.writerows(list_of_rows)
+
+@save_to_json
+@read_csv()
+def quadratic_equation(a: complex, b: complex, c: complex):
+    if a != 0:
+        d: complex = b ** 2 - 4 * a * c
+        x1: complex = (-b + d ** 0.5) / (2 * a)
+        x2: complex = (-b - d ** 0.5) / (2 * a)
+        return d, x1, x2
+    return
+
+quadratic_equation()
