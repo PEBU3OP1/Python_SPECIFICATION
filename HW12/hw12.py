@@ -33,7 +33,7 @@ class Student:
         self.subject_grades = {}
         self.subject_tests = {}
 
-        with open('diving_into_python\Seminar_12\subjects.csv', 'r') as csv_file:
+        with open('subjects.csv', 'r') as csv_file:
             subjects = csv.reader(csv_file, delimiter="\n")
             for item in subjects:
                 self.subject_grades[item[0]] = []
